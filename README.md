@@ -1,5 +1,11 @@
 # oss-engineering
 
+## Managing this repo
+
+There are some Git submodules in this repo.
+ - To clone this repo, run `git clone --recurse-submodules https://github.com/peterwwillis/oss-engineering`
+ - To checkout the submodules after cloning, run `make git-update-submodules` in this directory.
+
 ## Software management
 
 Software is managed in the following ways:
