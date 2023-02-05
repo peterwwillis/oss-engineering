@@ -26,11 +26,17 @@ if [ -n "${DOCKER_BUILD_TARGET:-}" ] ; then
     docker_args+=("--target" "${DOCKER_BUILD_TARGET}")
 fi
 
+# Note that below, we pass the full path to both the dockerfiles and
+# the context directory. So this script can theoretically be run from
+# any other directory, as long as you call it with its full path,
+# and the files you want to use are relative to this script's location.
+
 # shellcheck disable=SC2086
 docker build \
     ${DOCKER_BUILD_OPTS} \
     "${docker_args[@]}" \
     -t "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
-    -f "dockerfiles/$img/Dockerfile" \
+    -f "$SCRIPTDIR/../dockerfiles/$img/Dockerfile" \
     --build-arg "DEBUG=${DEBUG:-0}" \
-    .
+    "$SCRIPTDIR/.."
+

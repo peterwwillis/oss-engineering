@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 set -eu
 [ "${DEBUG:-0}" = "1" ] && set -x
-SCRIPT="oss-eng"
+SCRIPT="oss-eng_list"
 SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
 [ -r "$SCRIPTDIR/../bash/common.inc" ] && . "$SCRIPTDIR/../bash/common.inc"
-
-OSS_ENG_VER="0.1.0"
 
 _usage_txt="
 Usage: $SCRIPT [OPTIONS] COMMAND [ARGS ..]
@@ -17,22 +15,5 @@ Options:
     -v              Show current command version
     -h              Show help output for subsequent commands
 "
-
-CMD_VERSION=0 CMD_HELP=0
-while getopts "hv" args
-do
-      case "$args" in
-          h)  CMD_HELP=1 ;;
-          v)  CMD_VERSION=1 ;;
-      esac
-done
-shift $(($OPTIND-1))
-
-# Process options
-if [ "${CMD_VERSION:-0}" = "1" ]
-    then echo "v$OSS_ENG_VER"
-elif [ "${CMD_HELP:-0}" = "1" ]
-    then _usage
-fi
 
 _main "$@"

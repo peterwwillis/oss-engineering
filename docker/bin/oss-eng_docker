@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -eu
+[ "${DEBUG:-0}" = "1" ] && set -x
+SCRIPT="oss-eng_docker"
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
+[ -r "$SCRIPTDIR/../../bash/common.inc" ] && . "$SCRIPTDIR/../../bash/common.inc"
+
+_usage_txt="
+Usage: $SCRIPT COMMAND [ARGS ..]
+
+Commands:
+$( _list_script_cmds_from_path )
+"
+
+_main "$@"

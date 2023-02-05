@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -eu
+[ "${DEBUG:-0}" = "1" ] && set -x
+SCRIPT="oss-eng_docker_build"
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
+[ -r "$SCRIPTDIR/../../bash/common.inc" ] && . "$SCRIPTDIR/../../bash/common.inc"
+
+declare -a container_list=()
+while read -r line ; do 
+    container_list+=("$line")
+done < <(ls "$SCRIPTDIR"/../dockerfiles/)
+
+_usage_txt="
+Usage: $SCRIPT CONTAINER [ARGS ..]
+
+Containers to build:
+	all
+$( for i in "${container_list[@]}" ; do printf "\t%s\n" "$i" ; done )
+"
+#$( printf "%s\n" "${container_list[@]}" | sed -E 's/ /\t\n\t/g' )
+
+_cmd_build () {
+    [ $# -gt 0 ] || _usage
+    container="$1"; shift 1
+    declare -a containers=("$container")
+    if [ "$container" = "all" ] ; then
+        containers=("${container_list[@]}")
+    fi
+    for container in "${containers[@]}" ; do
+        _info "Running 'docker build' container='$container' ($@) ..."
+        "$SCRIPTDIR"/build_docker_image.sh "$container" "$@"
+    done
+}
+
+
+cmd="build"
+_main "$cmd" "$@"

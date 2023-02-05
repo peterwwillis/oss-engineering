@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -eu
+[ "${DEBUG:-0}" = "1" ] && set -x
+SCRIPT="oss-eng_list_deployments"
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
+[ -r "$SCRIPTDIR/../bash/common.inc" ] && . "$SCRIPTDIR/../bash/common.inc"
+
+_usage_txt="
+Usage: $SCRIPT [OPTIONS]
+
+Lists available deployments.
+"
+
+_main "$@"
