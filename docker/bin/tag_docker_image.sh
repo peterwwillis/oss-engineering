@@ -1,10 +1,13 @@
 #!/usr/bin/env sh
 set -eu
 [ "${DEBUG:-0}" = "1" ] && set -x
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
 
 _usage () {
     cat <<EOUSAGE
 Usage: $0 NAME1:TAG1 NAME2:TAG2
+
+Use docker to tag NAME1:TAG1 as NAME2:TAG2
 EOUSAGE
     exit 1
 }

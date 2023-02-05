@@ -1,10 +1,13 @@
 
-DOCKER_BUILD_SH := ./bin/make_docker_image.sh
+DOCKER_BUILD_SH := ./bin/build_docker_image.sh
 
-all: shellcheck python
+all: shellcheck python deployment
 
 shellcheck:
 	make -C bin shellcheck
 
 python:
 	$(DOCKER_BUILD_SH) python
+
+deployment:
+	$(DOCKER_BUILD_SH) deployment

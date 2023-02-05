@@ -1,28 +1,17 @@
 #!/usr/bin/env sh
 set -eu
 [ "${DEBUG:-0}" = "1" ] && set -x
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
 
-### Alpine linux
-if command -v apk ; then
-
-    apk add -U --no-cache \
+# shellcheck disable=SC2034
+export ALPINE_PKGS="bash \
         curl \
-        git
-
-### Debian / Ubuntu
-elif command -v apt-get ; then
-
-    export DEBIAN_FRONTEND="noninteractive"
-    apt-get update \
-    && apt-get install -y \
+        git"
+# shellcheck disable=SC2034
+export APK_PKGS="bash \
         curl \
-        git \
-    && rm -rf /var/lib/apt/lists/*
-
-else
-    echo "$0: ERROR: Could not detect package manager"
-    exit 1
-fi
+        git"
+install_os_pkgs.sh
 
 git clone https://github.com/asdf-vm/asdf.git /usr/share/asdf --branch v0.11.1
 cat <<'EOSCRIPT' > /etc/profile.d/asdf.sh

@@ -1,42 +1,33 @@
 #!/usr/bin/env sh
 set -eu
 [ "${DEBUG:-0}" = "1" ] && set -x
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)" ; export PATH="$SCRIPTDIR:$PATH"
 
 DEVSPACE_VERSION="latest"
 
-### Alpine linux
-if command -v apk ; then
-
-    apk add -U --no-cache \
-        bash \
-        bind-tools \
-        build-base \
-        curl \
-        git \
-        iputils \
-        openssl \
-        vim \
-        wget
-
-# Debian / Ubuntu
-elif command -v apt-get ; then
-
-    export DEBIAN_FRONTEND="noninteractive"
-    apt-get update \
-    && apt-get -y install \
-        bash \
+# shellcheck disable=SC2034
+export ALPINE_PKGS="bash \
+    bind-tools \
+    build-base \
+    coreutils \
+    curl \
+    git \
+    iputils \
+    openssl \
+    vim \
+    wget"
+# shellcheck disable=SC2034
+export APK_PKGS="bash \
+        coreutils \
         curl \
         dnsutils \
         git \
         inetutils-ping \
         openssl \
         vim \
-        wget
+        wget"
+install_os_pkgs.sh
 
-else
-    echo "$0: ERROR: Could not detect package manager"
-    exit 1
-fi
 
 ARCH_SHORT="arm64"
 ARCH=$(arch)

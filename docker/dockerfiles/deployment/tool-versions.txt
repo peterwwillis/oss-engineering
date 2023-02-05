@@ -1,0 +1,6 @@
+kubectl latest https://github.com/asdf-community/asdf-kubectl.git
+
+packer latest https://github.com/asdf-community/asdf-hashicorp.git
+terraform latest https://github.com/asdf-community/asdf-hashicorp.git
+
+poetry latest https://github.com/asdf-community/asdf-poetry.git
