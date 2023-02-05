@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+set -eu
+[ "${DEBUG:-0}" = "1" ] && set -x
+
+OSS_ENG_VER="0.1.0"
+
+#############################################
+_usage () {
+    # squash non-alphanum characters from $* into '_'
+    args="$*"; args="${args//[^a-zA-Z0-9]/_}"
+    eval txt="\$_usage_cmd_${args:-}" # " This comment fixes a vim syntax formatting bug
+    printf "%s\n" "$txt"
+    exit 1
+}
+
+_log () { printf "%s\n" "$*" 1>&2 ; }
+_info () { _log "INFO: $*" ; }
+_err () { _log "ERROR: $*" ; }
+_errexit () { _err "$*" ; exit 1 ; }
+
+#############################################
+############# Commands
+
+_cmd () {
+    name="$1"; shift 1
+    if [ "$(type -t _cmd_"${name}_${1:-}")" = "function" ] ; then
+        cmd="$1"; shift 1 ; _cmd_"${name}_${cmd}" "$@"
+        exit $?
+    fi
+}
+_usage_cmd_="
+Usage: $0 [OPTIONS] COMMAND [ARGS ..]
+
+Commands:
+    list            List various things
+    run             Run various things
+
+Options:
+    -v              Show current command version
+    -h              Show help output for subsequent commands
+"
+
+_cmd_list () {
+    _cmd "list" "$@" # Try to load any sub-command function
+    [ $# -gt 0 ] || _usage list # Must have a command argument
+}
+_usage_cmd_list="
+Usage: $0 list COMMAND [ARGS ..]
+
+Commands:
+    list deployments            List available deployments
+"
+
+_cmd_list_deployments () {
+    _cmd "list_deployments" "$@" # Try to load any sub-command function
+    #while getopts "h" args ; do case "$args" in
+    #          h)  _usage list deployments ;;
+    #esac ; done ; shift $(($OPTIND-1))
+}
+_usage_cmd_list_deployments="
+Usage: $0 list deployments
+"
+
+#############################################
+############# Main execution
+
+CMD_VERSION=0 CMD_HELP=0
+while getopts "hv" args
+do
+      case "$args" in
+          h)  CMD_HELP=1 ;;
+          v)  CMD_VERSION=1 ;;
+      esac
+done
+shift $(($OPTIND-1))
+
+# Process options
+if [ "${CMD_VERSION:-0}" = "1" ]
+    then echo "v$OSS_ENG_VER"
+elif [ "${CMD_HELP:-0}" = "1" ]
+    then _usage "$@"
+fi
+
+[ $# -gt 0 ] || _usage
+cmd="$1"; shift 1
+_cmd_"$cmd" "$@"
